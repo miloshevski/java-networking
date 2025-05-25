@@ -6,21 +6,20 @@ public class RequestProcessor {
 
     private String command;
     private String uri;
-    private String versoin;
-    private HashMap<String,String> headers;
+    private String version;
+    private HashMap<String, String> headers;
 
-    private RequestProcessor(String [] request){
+    private RequestProcessor(String[] request){
         String cmd = request[0];
         String[] parts = cmd.split("\\s");
         this.command = parts[0];
         this.uri = parts[1];
-        this.versoin = parts[2];
+        this.version = parts[2];
         headers = new HashMap<>();
 
         for(int i=1;i<request.length;i++){
             parts = request[i].split(":\\s+");
-            headers.put(parts[0],parts[1]);
-
+            headers.put(parts[0], parts[1]);
         }
     }
     public static RequestProcessor of(String data){
@@ -35,8 +34,8 @@ public class RequestProcessor {
         return uri;
     }
 
-    public String getVersoin() {
-        return versoin;
+    public String getVersion() {
+        return version;
     }
 
     public HashMap<String, String> getHeaders() {

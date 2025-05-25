@@ -9,27 +9,29 @@ import java.net.SocketException;
 public class UDPServer extends Thread{
     private DatagramSocket socket;
 
-    private byte[] buf = new byte[256];
+    private byte[] buffer = new byte[256];
 
-    public UDPServer(int port){
+    public UDPServer(int port) {
         try {
             socket = new DatagramSocket(port);
-        } catch (SocketException e){
-            e.printStackTrace();
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
         }
     }
+
     @Override
     public void run() {
-        DatagramPacket packet = new DatagramPacket(buf, buf.length);
-        while(true){
-            try{
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+
+        while (true) {
+            try {
                 socket.receive(packet);
-                String recieving = new String(packet.getData(),0,packet.getLength());
-                System.out.printf("RECIEVED:" + recieving);
+                String recieved = new String(packet.getData(), 0, packet.getLength());
+                System.out.println("Recieved: " + recieved);
                 InetAddress address = packet.getAddress();
                 int port = packet.getPort();
 
-                packet = new DatagramPacket(buf, buf.length, address,port);
+                packet = new DatagramPacket(buffer, buffer.length, address, port);
                 socket.send(packet);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -38,7 +40,7 @@ public class UDPServer extends Thread{
     }
 
     public static void main(String[] args) {
-        UDPServer server = new UDPServer(12345);
+        UDPServer server = new UDPServer(4445);
         server.start();
     }
 }

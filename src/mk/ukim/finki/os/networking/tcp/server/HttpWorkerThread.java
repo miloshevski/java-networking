@@ -18,42 +18,41 @@ public class HttpWorkerThread extends Thread{
         PrintWriter writer = null;
 
         try {
-            System.out.printf("Connected:%s:%d\n", socket.getInetAddress(), socket.getPort());
+            System.out.println("Connecting to " + socket.getInetAddress());
 
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
             String line = null;
-
             StringBuilder builder = new StringBuilder();
 
-            while (!(line=reader.readLine()).isEmpty()){
-                builder.append(line);
+            while(!(line = reader.readLine()).isEmpty()){
+                builder.append(line +"\n");
                 System.out.println(line);
             }
             RequestProcessor request = RequestProcessor.of(builder.toString());
             writer.write("HTTP/1.1 200 OK\n\n");
             if(request.getCommand().equals("GET") && request.getUri().equals("/time")){
-                writer.printf("<html><body><h1>%s</h1></body></html>", LocalDateTime.now().format(DateTimeFormatter.ISO_TIME));
+                writer.printf("<html><body><h1>%s</h1></body></html>", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             }else{
-                writer.printf("<html><body><h1>HELLO WORLD</h1></body></html>");
+                writer.printf("<html><body><h1>Hello World</h1></body></html>");
             }
             writer.flush();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }finally{
-            if(reader != null){
+            if (reader != null){
                 try {
                     reader.close();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-            if(writer != null){
+            if (writer != null){
                 writer.close();
             }
-            if(socket != null){
+            if (socket != null){
                 try {
                     socket.close();
                 } catch (IOException e) {

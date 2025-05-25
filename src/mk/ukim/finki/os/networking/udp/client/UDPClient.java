@@ -10,7 +10,7 @@ public class UDPClient extends Thread{
     private DatagramSocket socket;
     private InetAddress inetAddress;
     private String message;
-    private byte[] buf;
+    private byte[] buffer;
 
     public UDPClient(String serverName, int serverPort, String message) {
         this.serverName = serverName;
@@ -26,24 +26,23 @@ public class UDPClient extends Thread{
             throw new RuntimeException(e);
         }
     }
-    @Override
-    public void run(){
-        buf = message.getBytes();
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, this.inetAddress, this.serverPort);
 
+    @Override
+    public void run() {
+        buffer = message.getBytes();
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.inetAddress, this.serverPort);
         try {
             socket.send(packet);
-            packet = new DatagramPacket(buf, buf.length, inetAddress, serverPort);
+            packet = new DatagramPacket(buffer, buffer.length, inetAddress, serverPort);
             socket.receive(packet);
-            System.out.println(new String(packet.getData(),0,packet.getLength()));
-
+            System.out.println(new String(packet.getData(), 0, packet.getLength()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static void main(String[] args) {
-        UDPClient client = new UDPClient("localhost",12345,"HEllo World!");
-        client.start();
+        UDPClient udpClient = new UDPClient("localhost", 4445, "hello");
+        udpClient.start();
     }
 }
